@@ -1,39 +1,117 @@
-"""
-Example of how to connect pymavlink to an autopilot via an UDP connection
-"""
+# Python code for Multiple Color Detection
 
-# Disable "Bare exception" warning
-# pylint: disable=W0702
 
-import time
-# Import mavutil
-from pymavlink import mavutil
+import numpy as np
+import cv2
 
-# Create the connection
-#  If using a companion computer
-#  the default connection is available
-#  at ip 192.168.2.1 and the port 14550
-# Note: The connection is done with 'udpin' and not 'udpout'.
-#  You can check in http:192.168.2.2:2770/mavproxy that the communication made for 14550
-#  uses a 'udpbcast' (client) and not 'udpin' (server).
-#  If you want to use QGroundControl in parallel with your python script,
-#  it's possible to add a new output port in http:192.168.2.2:2770/mavproxy as a new line.
-#  E.g: --out udpbcast:192.168.2.255:yourport
-master = mavutil.mavlink_connection('udpin:0.0.0.0:14550')
+# Capturing video through webcam
+webcam = cv2.VideoCapture(0)
 
-# Make sure the connection is valid
-master.wait_heartbeat()
+# Start a while loop
+while (1):
 
-# Get some information !
-while True:
-    try:
-        print(master.recv_match().to_dict())
-    except:
-        pass
-    time.sleep(0.1)
+    # Reading the video from the
+    # webcam in image frames
+    _, imageFrame = webcam.read()
 
-# Output:
-# {'mavpackettype': 'AHRS2', 'roll': -0.11364290863275528, 'pitch': -0.02841472253203392, 'yaw': 2.0993032455444336, 'altitude': 0.0, 'lat': 0, 'lng': 0}
-# {'mavpackettype': 'AHRS3', 'roll': 0.025831475853919983, 'pitch': 0.006112074479460716, 'yaw': 2.1514968872070312, 'altitude': 0.0, 'lat': 0, 'lng': 0, 'v1': 0.0, 'v2': 0.0, 'v3': 0.0, 'v4': 0.0}
-# {'mavpackettype': 'VFR_HUD', 'airspeed': 0.0, 'groundspeed': 0.0, 'heading': 123, 'throttle': 0, 'alt': 3.129999876022339, 'climb': 3.2699999809265137}
-# {'mavpackettype': 'AHRS', 'omegaIx': 0.0014122836291790009, 'omegaIy': -0.022567369043827057, 'omegaIz': 0.02394154854118824, 'accel_weight': 0.0, 'renorm_val': 0.0, 'error_rp': 0.08894175291061401, 'error_yaw': 0.0990816056728363}
+    # Convert the imageFrame in
+    # BGR(RGB color space) to
+    # HSV(hue-saturation-value)
+    # color space
+    hsvFrame = cv2.cvtColor(imageFrame, cv2.COLOR_BGR2HSV)
+
+    # Set range for red color and
+    # define mask
+    red_lower = np.array([136, 87, 111], np.uint8)
+    red_upper = np.array([180, 255, 255], np.uint8)
+    red_mask = cv2.inRange(hsvFrame, red_lower, red_upper)
+
+    # Set range for green color and
+    # define mask
+    green_lower = np.array([25, 52, 72], np.uint8)
+    green_upper = np.array([102, 255, 255], np.uint8)
+    green_mask = cv2.inRange(hsvFrame, green_lower, green_upper)
+
+    # Set range for blue color and
+    # define mask
+    blue_lower = np.array([94, 80, 2], np.uint8)
+    blue_upper = np.array([120, 255, 255], np.uint8)
+    blue_mask = cv2.inRange(hsvFrame, blue_lower, blue_upper)
+
+    # Morphological Transform, Dilation
+    # for each color and bitwise_and operator
+    # between imageFrame and mask determines
+    # to detect only that particular color
+    kernal = np.ones((5, 5), "uint8")
+
+    # For red color
+    red_mask = cv2.dilate(red_mask, kernal)
+    res_red = cv2.bitwise_and(imageFrame, imageFrame,
+                              mask=red_mask)
+
+    # For green color
+    green_mask = cv2.dilate(green_mask, kernal)
+    res_green = cv2.bitwise_and(imageFrame, imageFrame,
+                                mask=green_mask)
+
+    # For blue color
+    blue_mask = cv2.dilate(blue_mask, kernal)
+    res_blue = cv2.bitwise_and(imageFrame, imageFrame,
+                               mask=blue_mask)
+
+    # Creating contour to track red color
+    contours, hierarchy = cv2.findContours(red_mask,
+                                           cv2.RETR_TREE,
+                                           cv2.CHAIN_APPROX_SIMPLE)
+
+    for pic, contour in enumerate(contours):
+        area = cv2.contourArea(contour)
+        if (area > 300):
+            x, y, w, h = cv2.boundingRect(contour)
+            imageFrame = cv2.rectangle(imageFrame, (x, y),
+                                       (x + w, y + h),
+                                       (0, 0, 255), 2)
+
+            cv2.putText(imageFrame, "Red Colour", (x, y),
+                        cv2.FONT_HERSHEY_SIMPLEX, 1.0,
+                        (0, 0, 255))
+
+    # Creating contour to track green color
+    contours, hierarchy = cv2.findContours(green_mask,
+                                           cv2.RETR_TREE,
+                                           cv2.CHAIN_APPROX_SIMPLE)
+
+    for pic, contour in enumerate(contours):
+        area = cv2.contourArea(contour)
+        if (area > 300):
+            x, y, w, h = cv2.boundingRect(contour)
+            imageFrame = cv2.rectangle(imageFrame, (x, y),
+                                       (x + w, y + h),
+                                       (0, 255, 0), 2)
+
+            cv2.putText(imageFrame, "Green Colour", (x, y),
+                        cv2.FONT_HERSHEY_SIMPLEX,
+                        1.0, (0, 255, 0))
+
+    # Creating contour to track blue color
+    contours, hierarchy = cv2.findContours(blue_mask,
+                                           cv2.RETR_TREE,
+                                           cv2.CHAIN_APPROX_SIMPLE)
+    for pic, contour in enumerate(contours):
+        area = cv2.contourArea(contour)
+        if (area > 300):
+            x, y, w, h = cv2.boundingRect(contour)
+            imageFrame = cv2.rectangle(imageFrame, (x, y),
+                                       (x + w, y + h),
+                                       (255, 0, 0), 2)
+
+            cv2.putText(imageFrame, "Blue Colour", (x, y),
+                        cv2.FONT_HERSHEY_SIMPLEX,
+                        1.0, (255, 0, 0))
+
+    # Program Termination
+    cv2.imshow("Multiple Color Detection in Real-TIme", imageFrame)
+    if cv2.waitKey(10) & 0xFF == ord('q'):
+        cap.release()
+        cv2.destroyAllWindows()
+        break
