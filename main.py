@@ -3,12 +3,10 @@
 
 import numpy as np
 import cv2
-from matplotlib.pyplot import gray
 
 face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 eye_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_eye.xml')
 smile_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_smile.xml')
-
 
 
 def detect(gray, frame):
@@ -20,7 +18,10 @@ def detect(gray, frame):
         smiles = smile_cascade.detectMultiScale(roi_gray, 1.8, 20)
 
         for (sx, sy, sw, sh) in smiles:
-            cv2.rectangle(roi_color, (sx, sy), ((sx + sw), (sy + sh)), (0, 0, 255), 2)
+            imageFrame = cv2.rectangle(roi_color, (sx, sy), ((sx + sw), (sy + sh)), (0, 0, 255), 2)
+            cv2.putText(imageFrame, "Smile", (sx, sy),
+                        cv2.FONT_HERSHEY_SIMPLEX, 1.0,
+                        (0, 0, 255))
     return frame
 
 
