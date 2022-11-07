@@ -3,6 +3,7 @@
 
 import numpy as np
 import cv2
+from PIL import ImageGrab
 
 face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 eye_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_eye.xml')
@@ -29,12 +30,15 @@ def detect(gray, frame):
 webcam = cv2.VideoCapture(0)
 
 # Start a while loop
+x = 1
 while (1):
 
     # Reading the video from the
     # webcam in image frames
     _, imageFrame = webcam.read()
-
+    #if x == 1:
+    #    imageFrame = np.array(ImageGrab.grab())
+    #    imageFrame = cv2.cvtColor(src=imageFrame, code=cv2.COLOR_BGR2RGB)
     # Convert the imageFrame in
     # BGR(RGB color space) to
     # HSV(hue-saturation-value)
@@ -142,3 +146,4 @@ while (1):
         cap.release()
         cv2.destroyAllWindows()
         break
+    x = 2
