@@ -3,6 +3,9 @@
 
 import numpy as np
 import cv2
+import os
+from time import time
+from windowcapture import WindowCapture
 from matplotlib.pyplot import gray
 
 face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
@@ -25,15 +28,15 @@ def detect(gray, frame):
 
 
 # Capturing video through webcam
-webcam = cv2.VideoCapture(0)
-
+#webcam2 = cv2.VideoCapture(0)
+webcam = WindowCapture('P3')
 # Start a while loop
 while (1):
 
     # Reading the video from the
     # webcam in image frames
-    _, imageFrame = webcam.read()
-
+    #_, imageFrame2 = webcam.read()
+    imageFrame = webcam.get_screenshot()
     # Convert the imageFrame in
     # BGR(RGB color space) to
     # HSV(hue-saturation-value)
