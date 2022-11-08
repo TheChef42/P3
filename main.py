@@ -4,6 +4,9 @@
 import numpy as np
 import cv2
 from PIL import ImageGrab
+import os
+from time import time
+from windowcapture import WindowCapture
 
 face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 eye_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_eye.xml')
@@ -27,15 +30,17 @@ def detect(gray, frame):
 
 
 # Capturing video through webcam
-webcam = cv2.VideoCapture(0)
+#webcam = cv2.VideoCapture(0)
+webcam = WindowCapture('Pictures')
 
 # Start a while loop
+loop_time = time()
 x = 1
 while (1):
 
     # Reading the video from the
     # webcam in image frames
-    _, imageFrame = webcam.read()
+    imageFrame = webcam.get_screenshot()
     #if x == 1:
     #    imageFrame = np.array(ImageGrab.grab())
     #    imageFrame = cv2.cvtColor(src=imageFrame, code=cv2.COLOR_BGR2RGB)
@@ -43,6 +48,7 @@ while (1):
     # BGR(RGB color space) to
     # HSV(hue-saturation-value)
     # color space
+    cv2.imshow('Computer vision', imageFrame)
     hsvFrame = cv2.cvtColor(imageFrame, cv2.COLOR_BGR2HSV)
 
     gray = cv2.cvtColor(imageFrame, cv2.COLOR_BGR2GRAY)
@@ -128,6 +134,7 @@ while (1):
     contours, hierarchy = cv2.findContours(blue_mask,
                                            cv2.RETR_TREE,
                                            cv2.CHAIN_APPROX_SIMPLE)
+
     for pic, contour in enumerate(contours):
         area = cv2.contourArea(contour)
         if (area > 300):
