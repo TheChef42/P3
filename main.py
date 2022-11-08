@@ -3,15 +3,11 @@
 
 import numpy as np
 import cv2
-import os
-from time import time
-from windowcapture import WindowCapture
-from matplotlib.pyplot import gray
+from PIL import ImageGrab
 
 face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 eye_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_eye.xml')
 smile_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_smile.xml')
-
 
 
 def detect(gray, frame):
@@ -23,20 +19,26 @@ def detect(gray, frame):
         smiles = smile_cascade.detectMultiScale(roi_gray, 1.8, 20)
 
         for (sx, sy, sw, sh) in smiles:
-            cv2.rectangle(roi_color, (sx, sy), ((sx + sw), (sy + sh)), (0, 0, 255), 2)
+            imageFrame = cv2.rectangle(roi_color, (sx, sy), ((sx + sw), (sy + sh)), (0, 0, 255), 2)
+            cv2.putText(imageFrame, "Smile", (sx, sy),
+                        cv2.FONT_HERSHEY_SIMPLEX, 1.0,
+                        (0, 0, 255))
     return frame
 
 
 # Capturing video through webcam
-#webcam2 = cv2.VideoCapture(0)
-webcam = WindowCapture('P3')
+webcam = cv2.VideoCapture(0)
+
 # Start a while loop
+x = 1
 while (1):
 
     # Reading the video from the
     # webcam in image frames
-    #_, imageFrame2 = webcam.read()
-    imageFrame = webcam.get_screenshot()
+    _, imageFrame = webcam.read()
+    #if x == 1:
+    #    imageFrame = np.array(ImageGrab.grab())
+    #    imageFrame = cv2.cvtColor(src=imageFrame, code=cv2.COLOR_BGR2RGB)
     # Convert the imageFrame in
     # BGR(RGB color space) to
     # HSV(hue-saturation-value)
@@ -144,3 +146,4 @@ while (1):
         cap.release()
         cv2.destroyAllWindows()
         break
+    x = 2
