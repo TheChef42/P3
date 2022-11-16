@@ -30,8 +30,8 @@ def detect(gray, frame):
 
 
 # Capturing video through webcam
-#webcam = cv2.VideoCapture(0)
-webcam = WindowCapture('Pictures')
+webcam = cv2.VideoCapture(0)
+#webcam = WindowCapture('Pictures')
 
 # Start a while loop
 loop_time = time()
@@ -40,7 +40,7 @@ while (1):
 
     # Reading the video from the
     # webcam in image frames
-    imageFrame = webcam.get_screenshot()
+    _,imageFrame = webcam.read()
     #if x == 1:
     #    imageFrame = np.array(ImageGrab.grab())
     #    imageFrame = cv2.cvtColor(src=imageFrame, code=cv2.COLOR_BGR2RGB)
