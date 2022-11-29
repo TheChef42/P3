@@ -261,6 +261,14 @@ if __name__ == '__main__':
                 for pic, contour in enumerate(contours):
                     area = cv2.contourArea(contour)
                     if (area > 300):
+                        while True:
+                            for angle in range(-50, 50):
+                                look_at(angle * 100)
+                                time.sleep(0.1)
+                            for angle in range(-50, 50):
+                                look_at(-angle * 100)
+                                time.sleep(0.1)
+                                break
                         x, y, w, h = cv2.boundingRect(contour)
                         imageFrame = cv2.rectangle(imageFrame, (x, y),
                                                    (x + w, y + h),
