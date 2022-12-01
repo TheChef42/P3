@@ -1,0 +1,13 @@
+train: ../train/images
+val: ../valid/images
+test: ../test/images
+
+nc: 1
+names: ['Lego-Bricks']
+
+roboflow:
+  workspace: project
+  project: lego-briks-detection-yolo
+  version: 1
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/project/lego-briks-detection-yolo/dataset/1
