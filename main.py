@@ -1,3 +1,4 @@
+
 import torch
 import numpy as np
 import cv2
@@ -7,9 +8,7 @@ from functorch._src.aot_autograd import model_name
 
 
 class LegoDetection:
-    """
-    detection with yolov5
-    """
+
 
     def __init__(self, capture_index, model_name):
         self.capture_index = capture_index
@@ -86,7 +85,7 @@ class LegoDetection:
 
         cap.release()
 
-detector = LegoDetection(capture_index=0, model_name='./runs/train/yolov5s_results/weights/best.pt')
+detector = LegoDetection(capture_index=0, model_name='./runs/train/yolov5s_results3/weights/best.pt')
 detector()
 
 
@@ -96,9 +95,8 @@ detector()
 
 
 
-
-"""
-Example of how to connect pymavlink to an autopilot via an UDP connection
+""""""
+#Example of how to connect pymavlink to an autopilot via an UDP connection
 
 
 # Disable "Bare exception" warning
@@ -108,8 +106,8 @@ Example of how to connect pymavlink to an autopilot via an UDP connection
 
 from roboflow import Roboflow
 rf = Roboflow(api_key="n5mOz2UBdtv07UIFuhIF")
-project = rf.workspace("aalborg-university-m8ved").project("lego-briks-detection-yolo")
-dataset = project.version(1).download("yolov5")
+project = rf.workspace("newoysters").project("oysters-4vutw")
+dataset = project.version(41).download("yolov5")
 
 import glob
 from IPython.display import Image, display
@@ -143,4 +141,4 @@ for imageName in glob.glob('./runs/detect/exp2/*.jpg'): #assuming JPG
 #  If you want to use QGroundControl in parallel with your python script,
 #  it's possible to add a new output port in http:192.168.2.2:2770/mavproxy as a new line.
 #  E.g: --out udpbcast:192.168.2.255:yourport
-"""""""""
+""""""

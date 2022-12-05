@@ -26,7 +26,6 @@
 storage.googleapis.com
 data/*
 data/images/*
-!data/*.yaml
 !data/hyps
 !data/scripts
 !data/images
