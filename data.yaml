@@ -1,0 +1,13 @@
+train: ../train/images
+val: ../valid/images
+test: ../test/images
+
+nc: 2
+names: ['Oyster-Closed', 'Oyster-Open']
+
+roboflow:
+  workspace: newoysters
+  project: oysters-4vutw
+  version: 41
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/newoysters/oysters-4vutw/dataset/41
