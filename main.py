@@ -4,6 +4,7 @@ import numpy as np
 import cv2
 from time import time
 
+#test
 class LegoDetection:
 
     def __init__(self, capture_index, model_name):
@@ -74,7 +75,7 @@ class LegoDetection:
             cv2.putText(frame, f'FPS: {int(fps)}', (20, 70), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0,255,0), 2)
 
             cv2.imshow("Multiple Color Detection in Real-TIme", frame)
-            if cv2.waitKey(4) & 0xFF == ord('q'):
+            if cv2.waitKey(1) & 0xFF == ord('q'):
                 cap.release()
                 cv2.destroyAllWindows()
                 break
