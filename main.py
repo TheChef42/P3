@@ -1,4 +1,3 @@
-
 import torch
 import numpy as np
 import cv2
@@ -11,7 +10,7 @@ class LegoDetection:
         self.capture_index = capture_index
         self.model = self.load_model(model_name)
         self.classes = self.model.names
-        self.device = 'cpu'
+        self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
     def get_video_capture(self):
 
@@ -63,7 +62,7 @@ class LegoDetection:
             ret, frame = cap.read()
             assert ret
 
-            frame = cv2.resize(frame, (640, 640))
+            frame = cv2.resize(frame, (320, 320))
 
             start_time = time()
             results = self.score_frame(frame)
@@ -74,7 +73,8 @@ class LegoDetection:
 
             cv2.putText(frame, f'FPS: {int(fps)}', (20, 70), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0,255,0), 2)
 
-            cv2.imshow("Multiple Color Detection in Real-TIme", frame)
+
+            cv2.imshow("Object detection", frame)
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 cap.release()
                 cv2.destroyAllWindows()
