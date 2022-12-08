@@ -10,7 +10,7 @@ class LegoDetection:
         self.capture_index = capture_index
         self.model = self.load_model(model_name)
         self.classes = self.model.names
-        self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
+        self.device = 'cuda' #if torch.cuda.is_available() else 'cpu'
 
     def get_video_capture(self):
 
@@ -45,7 +45,7 @@ class LegoDetection:
         x_shape, y_shape = frame.shape[1], frame.shape[0]
         for i in range(n):
             row=cord[i]
-            if row[4]>= 0.7:
+            if row[4]>= 0.85:
                 x1, y1, x2, y2 = int(row[0]*x_shape), int(row[1]*y_shape), int(row[2]*x_shape), int(row[3]*y_shape)
                 bgr = (0, 255, 0)
                 cv2.rectangle(frame, (x1, y1), (x2, y2), bgr, 2)
@@ -62,7 +62,7 @@ class LegoDetection:
             ret, frame = cap.read()
             assert ret
 
-            frame = cv2.resize(frame, (320, 320))
+            frame = cv2.resize(frame, (640, 640))
 
             start_time = time()
             results = self.score_frame(frame)
