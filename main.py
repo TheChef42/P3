@@ -71,7 +71,7 @@ class LegoDetection:
             end_time = time()
             fps = 1/np.round(end_time - start_time, 2)
 
-            cv2.putText(frame, f'FPS: {int(fps)}', (20, 70), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0,255,0), 2)
+            cv2.putText(frame, f'FPS: {str(fps)}', (20, 70), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0,255,0), 2)
 
 
             cv2.imshow("Object detection", frame)
