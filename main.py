@@ -147,7 +147,7 @@ class LegoDetection:
         self.capture_index = capture_index
         self.model = self.load_model(model_name)
         self.classes = self.model.names
-        self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
+        self.device = 'cpu' #if torch.cuda.is_available() else 'cpu'
 
     def get_video_capture(self):
 
@@ -191,27 +191,33 @@ class LegoDetection:
         return frame
 
     def __call__(self):
-
-        cap = Video()
-
+        average_fps = []
+        cap = Video() 
+        end_time = time()
         while True:
             if cap.frame_available():
                 frame = cap.frame()
-                cv2.imshow("Object detection", frame)
+                #fps= int(frame.get(cv2.CAP_PROP_FPS))
+                #print("fps:", fps)
                 frame = cv2.resize(frame, (640, 640))
 
                 start_time = time()
-                results = self.score_frame(frame)
+
+                results = self.score_frame(frame)                                               
                 frame = self.plot_boxes(results, frame)
 
-                end_time = time()
-                fps = 1/np.round(end_time - start_time, 2)
+                #end_time = time()
+                fps = 1/(start_time - end_time)
+                end_time = start_time
+                fps = int(fps)
 
                 cv2.putText(frame, f'FPS: {str(fps)}', (20, 70), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0,255,0), 2)
-
+                
+                average_fps.append(int(fps))
 
                 cv2.imshow("Object detection", frame)
                 if cv2.waitKey(1) & 0xFF == ord('q'):
+                    print(np.round(sum(average_fps)/len(average_fps), 3))
                     cap.release()
                     cv2.destroyAllWindows()
                     break
