@@ -148,7 +148,7 @@ class LegoDetection:
         self.capture_index = capture_index
         self.model = self.load_model(model_name)
         self.classes = self.model.names
-        self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
+        self.device = 'cpu' if torch.cuda.is_available() else 'cpu'
 
     def get_video_capture(self):
 
