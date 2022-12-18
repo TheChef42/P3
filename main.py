@@ -3,6 +3,7 @@ import numpy as np
 import cv2
 from time import time
 import gi
+import os
 
 gi.require_version('Gst', '1.0')
 from gi.repository import Gst
@@ -147,7 +148,7 @@ class LegoDetection:
         self.capture_index = capture_index
         self.model = self.load_model(model_name)
         self.classes = self.model.names
-        self.device = 'cpu' #if torch.cuda.is_available() else 'cpu'
+        self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
     def get_video_capture(self):
 
@@ -192,8 +193,11 @@ class LegoDetection:
 
     def __call__(self):
         average_fps = []
+        timed_fps = []
         cap = Video() 
+        time_time = time()
         end_time = time()
+        wait_time=10
         while True:
             if cap.frame_available():
                 frame = cap.frame()
@@ -212,13 +216,18 @@ class LegoDetection:
                 fps = int(fps)
 
                 cv2.putText(frame, f'FPS: {str(fps)}', (20, 70), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0,255,0), 2)
-                
+                loop_time = start_time - time_time
                 average_fps.append(int(fps))
-
+                if loop_time > wait_time:
+                    timed_fps.append(np.round(sum(average_fps)/len(average_fps), 3))
+                    average_fps.clear()
+                    time_time = time()
                 cv2.imshow("Object detection", frame)
                 if cv2.waitKey(1) & 0xFF == ord('q'):
-                    print(np.round(sum(average_fps)/len(average_fps), 3))
-                    cap.release()
+                    with open ("results.txt", "w") as ofile:
+                        for x in timed_fps:
+                            ofile.write(str(x) + ";")
+                        print("File updated")
                     cv2.destroyAllWindows()
                     break
 
