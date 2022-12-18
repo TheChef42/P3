@@ -148,7 +148,7 @@ class LegoDetection:
         self.capture_index = capture_index
         self.model = self.load_model(model_name)
         self.classes = self.model.names
-        self.device = 'cpu' if torch.cuda.is_available() else 'cpu'
+        self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
     def get_video_capture(self):
 
@@ -213,18 +213,16 @@ class LegoDetection:
                 #end_time = time()
                 fps = 1/(start_time - end_time)
                 end_time = start_time
-                fps = int(fps)
 
-                cv2.putText(frame, f'FPS: {str(fps)}', (20, 70), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0,255,0), 2)
                 loop_time = start_time - time_time
-                average_fps.append(int(fps))
+                average_fps.append(fps)
                 if loop_time > wait_time:
                     timed_fps.append(np.round(sum(average_fps)/len(average_fps), 3))
                     average_fps.clear()
                     time_time = time()
                 cv2.imshow("Object detection", frame)
                 if cv2.waitKey(1) & 0xFF == ord('q'):
-                    with open ("results.txt", "w") as ofile:
+                    with open ("results2.txt", "w") as ofile:
                         for x in timed_fps:
                             ofile.write(str(x) + ";")
                         print("File updated")
