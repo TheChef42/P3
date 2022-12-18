@@ -222,7 +222,7 @@ class LegoDetection:
                     time_time = time()
                 cv2.imshow("Object detection", frame)
                 if cv2.waitKey(1) & 0xFF == ord('q'):
-                    with open ("results2.txt", "w") as ofile:
+                    with open ("results3.txt", "w") as ofile:
                         for x in timed_fps:
                             ofile.write(str(x) + ";")
                         print("File updated")
